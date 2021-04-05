@@ -108,16 +108,3 @@ def findInverse(mat, det):
         return inverMat
 
 
-def listElementryMarix(mat):
-    size = len(mat)
-    elemList = []
-    for col in range(size):
-        elem = createImat(size)
-        pivot = mat[col][col]
-        row = 0
-        while row != size:
-            if row != col:
-                elem[row][col] = -(mat[row][col] / pivot)
-            row += 1
-        elemList.append(elem)
-    return elemList
