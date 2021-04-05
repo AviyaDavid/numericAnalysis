@@ -1,38 +1,68 @@
+import copy #for deep copy of matrix
 def main():
+    A = [[-1.41, 2, 0], [1, -1.41, 1], [0, 2, -1.41]]
+    # user_matrix_2 = [[1, -1, -2], [2, -3, -5], [-1, 3, 5]]
+    B = [1, 1, 1]
+    # print('please enter  the size of matrix A\n')
+    # size_matrix = int(input())
+    # value_to_matrix(user_matrix,size_matrix,size_matrix)
+    # print('please enter vector B values\n')
+    # value_to_matrix(vector_B,size_matrix, 1)
 
-    user_matrix_1= [[1,2,1],[2,6,1],[1,1,4]]
-    user_matrix_2 = [[1, -1, -2], [2, -3,-5], [-1, 3, 5]]
-    vector_B = []
-    #print('please enter  the size of matrix A\n')
-    #size_matrix = int(input())
-    #value_to_matrix(user_matrix,size_matrix,size_matrix)
-    #print('please enter vector B values\n')
-    #value_to_matrix(vector_B,size_matrix, 1)
+    org_pivot(A, B)  # organize to prevent instability
 
-    user_test_lowerupper = LowerUpper(user_matrix_1)
-    print(MultiplyMatrix(user_test_lowerupper[0],user_test_lowerupper[1]))
-    user_test_lowerupper = LowerUpper(user_matrix_2)
-    print(MultiplyMatrix(user_test_lowerupper[0], user_test_lowerupper[1]))
+    # check if inverse= find inverse
+    detA = calcDet(A)
+    if detA is not 0:
+        inverA = findInverse(A)
+        X = MultiplyMatrix(inverA, B)
+    else:  # if irreversible do LU
+        LU = LowerUpper(A)
+        X = MultiplyMatrix(LU[1], MultiplyMatrix(findInverse(LU[0]), B))
+    print('x=' + X)
+
+    # user_test_lowerupper = LowerUpper(user_matrix_1)
 
 
-def org_pivot(matrix,B):
-    pivot_value = matrix[0][0]
-    pivot_row_value = 0;
-    for i in range(len(matrix)):
-        if matrix[i][0]>pivot_value:
-            pivot_row = matrix[i]
-            temp_row = matrix[pivot_row_value]
+# print(MultiplyMatrix(user_test_lowerupper[0], user_test_lowerupper[1]))
+# user_test_lowerupper = LowerUpper(user_matrix_2)
+# print(MultiplyMatrix(user_test_lowerupper[0], user_test_lowerupper[1]))
 
-def value_to_matrix(matrix,row, column):
+def org_pivot(matrix, B):
+    size = len(matrix)
+    for col in range(size):
+        maxRow = maxincol(matrix, col)
+        if maxRow > col:
+            xchngRows(matrix, col, maxRow)
+            xchngRows(B, col, maxRow)
+
+
+def maxincol(mat, col):
+    max = col
+    for row in range(col, len(mat)):
+        if abs(mat[row][col]) > abs(mat[max][col]):
+            max = row
+    return max
+
+
+def xchngRows(matrix, col, maxrow):
+    tempr = matrix[col]
+    matrix[col] = matrix[maxrow]
+    matrix[maxrow] = tempr
+
+
+
+def value_to_matrix(matrix, row, column):
     for i in range(row):
         row_values = []
         for j in range(column):
-            print('please enter a values\nrow {0},column {1}'.format(i,j))
+            print('please enter a values\nrow {0},column {1}'.format(i, j))
             row_values.append(int(input()))
         matrix.append(row_values)
 
+
 def createImat(size):
-    newMat=[]
+    newMat = []
     for i in range(size):
         newMat.append([])
         for j in range(size):
@@ -44,7 +74,7 @@ def createImat(size):
     return newMat
 
 
-def MultiplyMatrix(a,b):
+def MultiplyMatrix(a, b):
     size = len(a)
     sum = 0
     new_mat = []
@@ -52,75 +82,75 @@ def MultiplyMatrix(a,b):
         new_mat.append([])
         for c in range(size):
             for k in range(size):
-                sum += (a[r][k]*b[k][c])
+                sum += (a[r][k] * b[k][c])
             new_mat[r].append(sum)
-            sum=0
+            sum = 0
     return new_mat
 
 
-def mat_add(A,B):
-    new_mat=[]
+def mat_add(A, B):
+    new_mat = []
     if len(A) == len(B):
-        size=len(A)
+        size = len(A)
         for r in range(size):
             new_mat.append([])
             for c in range(size):
-                sum = A[r][c]+B[r][c]
+                sum = A[r][c] + B[r][c]
                 new_mat[r].append(sum)
     return new_mat
 
 
-
 def LowerUpper(mat):
     size = len(mat)
-    lower=createImat(size)
+    upper=copy.deepcopy(mat)
+    lower = createImat(size)
     for c in range(size):
         elem = createImat(size)
-        pivot = mat[c][c]
-        for r in range(c+1, size):
-            elem[r][c] = (-1)*(mat[r][c] / pivot)
-            lower[r][c]= (-1)*elem[r][c]
-        mat = MultiplyMatrix(elem, mat) #for upper matrix
+        pivot = upper[c][c]
+        for r in range(c + 1, size):
+            elem[r][c] = (-1) * (upper[r][c] / pivot)
+            lower[r][c] = (-1) * elem[r][c]
+        upper = MultiplyMatrix(elem, upper)  # for upper matrix
 
-    return[lower,mat]
+    return [lower, upper]
+
 
 def findInverse(mat):
     size = len(mat)
-
+    matCopy=copy.deepcopy(mat)
     inverMat = createImat(size)
     for col in range(size):
-        pivot = mat[col][col]
+        pivot = matCopy[col][col]
         tempElem = createImat(size)
         for row in range(size):
             if row != col:
-                tempElem[row][col] = (-1) * (mat[row][col] / pivot)
-        mat = MultiplyMatrix(tempElem, mat)
+                tempElem[row][col] = (-1) * (matCopy[row][col] / pivot)
+        matCopy = MultiplyMatrix(tempElem, matCopy)
         inverMat = MultiplyMatrix(tempElem, inverMat)
 
     # check diagonal numbers
     for i in range(size):
-        pivot = mat[i][i]
+        pivot = matCopy[i][i]
         if pivot != 1:
             for col in range(size):
                 inverMat[i][col] /= float(pivot)
-            mat[i][i] = 1
+            matCopy[i][i] = 1
     return inverMat
 
 
 def twoontwoDet(mat):
     return (mat[1][1] * mat[2][2]) - (mat[1][2] * mat[2][1])
 
+
 def calcDet(mat):
-    size=len(mat)
+    size = len(mat)
     if size == 2:
         return twoontwoDet(mat)
     if size == 1:
         return mat[1][1]
     else:
-        det=1
-        upperMat=LowerUpper(mat)[1]
+        det = 1
+        upperMat = LowerUpper(mat)[1]
         for i in range(size):
-            det*=upperMat[i][i]
+            det *= upperMat[i][i]
         return det
-
-main()
