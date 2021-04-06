@@ -1,28 +1,38 @@
 import copy #for deep copy of matrix
 def main():
-    A = [[[0.913 ,0.659], [0.457,0.330]],[[0, 2, -1.41],[-1.41, 2, 0], [1, -1.41, 1] ]]
+    #user_matrix = [[[0.913 ,0.659], [0.457,0.330]],[[0, 2, -1.41],[-1.41, 2, 0], [1, -1.41, 1] ],[[1,2,3],[4,5,6],[7,8,9]]]
     # user_matrix_2 = [[1, -1, -2], [2, -3, -5], [-1, 3, 5]]
-    B = [[[0.254], [0.127]],[[1], [1], [1]]]
+    #vector_B = [[[0.254], [0.127]],[[1], [2], [3]],[[1],[2],[3]]]
 
-    # user_matrix_2 = [[1, -1, -2], [2, -3, -5], [-1, 3, 5]]
+    user_matrix=[]
+    vector_B=[]
 
-    # print('please enter  the size of matrix A\n')
-    # size_matrix = int(input())
-    # value_to_matrix(user_matrix,size_matrix,size_matrix)
-    # print('please enter vector B values\n')
-    # value_to_matrix(vector_B,size_matrix, 1)
-    for i in range(len(A)):
-        org_pivot(A[i], B[i])  # organize to prevent instability
-        X=0
-        # check if inverse= find inverse
-        detA = calcDet(A[i])
-        if detA != 0:
-            inverA = findInverse(A[i])
-            X = MultiplyMatrix(inverA, B[i])
-        else:  # if irreversible do LU
-            LU = LowerUpper(A[i])
-            X = MultiplyMatrix(LU[1], MultiplyMatrix(findInverse(LU[0]), B[i]))
-        print('x={}'.format(X) )
+    print('please enter  the size of matrix A\n')
+
+    while True: #loop for checking user input
+        size_matrix = input()
+        if float(size_matrix) % 1 == 0 and float(size_matrix)>1 :
+            size_matrix = float(size_matrix)
+            break
+        print('error!,please enter integer number >= 2')
+    size_matrix = int(size_matrix)
+
+    value_to_matrix(user_matrix,size_matrix,size_matrix)
+    print('please enter vector B values\n')
+    value_to_matrix(vector_B,size_matrix, 1)
+
+
+    org_pivot(user_matrix, vector_B)  # organize to prevent instability
+
+    # check if inverse= find inverse
+    detA = calcDet(user_matrix)
+    if detA != 0:
+        inverA = findInverse(user_matrix)
+        X = MultiplyMatrix(inverA, vector_B)
+    else:  # if irreversible do LU
+        LU = LowerUpper(user_matrix)
+        X = MultiplyMatrix(LU[1], MultiplyMatrix(findInverse(LU[0]), vector_B[i]))
+    print('x={}'.format(X) )
 
     # user_test_lowerupper = LowerUpper(user_matrix_1)
 
