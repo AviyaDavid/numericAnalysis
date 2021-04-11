@@ -70,7 +70,7 @@ def MultiplyMatrix(a, b):
                 new_mat[r][c] = sum
                 sum = 0
     else:
-        new_mat= []
+        new_mat = []
         for r in range(size):
             for c in range(size):
                 sum = sum + (a[r][c] * b[c])
