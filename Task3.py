@@ -1,3 +1,6 @@
+#Aviya David 209203991
+#Matan Ben-Shushan 205639800
+
 import copy  # for deep copy of matrix
 import sys
 
@@ -13,12 +16,12 @@ def main():
 
     print("choose method: \n1.Jacobi\n2.Gaus-Zaidel")
     choice = input()
-    #if choice == 1:
-     #   jacobi(A, B)
-    #else:
-      #  gaus_zaidel(A, B)
-    jacobi(A, B)
-    gaus_zaidel(A, B)
+    if choice == 1:
+      jacobi(A, B)
+    else:
+     gaus_zaidel(A, B)
+
+
 
 def org_pivot(matrix, B):
     #  organize to prevent instability
@@ -76,34 +79,36 @@ def dominant_diagonal(mat):
 
 def jacobi(A, B):
     print('####Jacobi####\n')
+    matA = copy.deepcopy(A)
+    matB = copy.deepcopy(B)
     iter = 0
     size = len(A)
-    r = [1, 1, 1]  # initialize to get in loop
+    rot = [1, 1, 1]  # initialize to get in loop
     next_rot = [0, 0, 0]
     print('{} \n'.format(next_rot))
-    while eps(r, next_rot) is False:
+    while eps(rot, next_rot) is False:
         iter += 1
-        r = copy.deepcopy(next_rot)
+        rot = copy.deepcopy(next_rot)
         for r in range(size):
             sum = B[r]
             for c in range(size):
                 if c != r:
-                    sum += (-1) * A[r][c] * r[c]
+                    sum += (-1) * A[r][c] * rot[c]
             next_rot[r] = sum / A[r][r]
         print('{} \n'.format(next_rot))
-    print('The Result was found after {} iterations'.format(iter))
+    print('The Result was found after {} iterations\n'.format(iter))
 
 
 def gaus_zaidel(A, B):
     print('####Gaus-Zaidel####\n')
     iter = 0
     size = len(A)
-    r = [1, 1, 1]  # intialize to get in loop
+    rot = [1, 1, 1]  # intialize to get in loop
     next_rot = [0, 0, 0]
     print('{} \n'.format(next_rot))
-    while eps(r, next_rot) is False:
+    while eps(rot, next_rot) is False:
         iter += 1
-        r = copy.deepcopy(next_rot)
+        rot = copy.deepcopy(next_rot)
         for r in range(size):
             sum = B[r]
             for c in range(size):
@@ -111,16 +116,16 @@ def gaus_zaidel(A, B):
                     if c < r:
                         sum += (-1) * (A[r][c] * next_rot[c])
                     else:
-                        sum += (-1) * (A[r][c] * r[c])
+                        sum += (-1) * (A[r][c] * rot[c])
             next_rot[r] = sum / A[r][r]
         print('{} \n'.format(next_rot))
-    print('The Result was found after {} iterations'.format(iter))
+    print('The Result was found after {} iterations\n'.format(iter))
 
 
 def eps(r, next_r):
     flag = True
-    for i in range(r):
-        if next_r[i] - r[i] > 0.0001:
+    for i in range(len(r)):
+        if abs(next_r[i] - r[i]) > 0.0001:
             flag = False
             break
     return flag
