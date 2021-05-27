@@ -12,3 +12,10 @@ def machineEpsilon():  # find and return machine epsilon
 
 
 print(machineEpsilon())  # print machine epsilon
+z = -1
+for i in range(10):
+    x = 0.1
+
+    print(z)
+    z = z + x
+
