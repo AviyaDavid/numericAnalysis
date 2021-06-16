@@ -178,8 +178,7 @@ def findSuspects(polynomial, start, end):
 
 def applyMethod(polynomial, start, end, epsilon):
     print("choose method:\n1.Bisection Method\n2.Newton-Raphson Method\n3.Secant Method")
-    # method = input()
-    method = 3
+    method = input()
     if method == 1:
         Bisection_Method(polynomial, start, end, epsilon)
     elif method == 2:
